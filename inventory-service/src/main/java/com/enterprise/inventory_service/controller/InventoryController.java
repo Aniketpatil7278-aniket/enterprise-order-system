@@ -2,6 +2,7 @@ package com.enterprise.inventory_service.controller;
 
 import com.enterprise.inventory_service.dto.InventoryRequestDto;
 import com.enterprise.inventory_service.dto.InventoryResponseDto;
+import com.enterprise.inventory_service.dto.ReleaseStockResponseDto;
 import com.enterprise.inventory_service.dto.ReserveInventoryRequestDto;
 import com.enterprise.inventory_service.service.InventoryService;
 import jakarta.validation.Valid;
@@ -21,7 +22,6 @@ public class InventoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InventoryResponseDto createInventory(
-
             @Valid
             @RequestBody
             InventoryRequestDto request
@@ -35,15 +35,14 @@ public class InventoryController {
 
     // GET INVENTORY
     @GetMapping("/{productId}")
-    public InventoryResponseDto getInventory(
+    public InventoryResponseDto getInventory(@PathVariable Long productId) {
+        return inventoryService.getInventory(productId);
+    }
 
-            @PathVariable
-            Long productId
-    ) {
-
-        return inventoryService.getInventory(
-                productId
-        );
+    //update the stock
+    @PutMapping("/upstock")
+    public InventoryResponseDto updateStock(@Valid @RequestBody InventoryRequestDto requestDto){
+        return  inventoryService.updateStock(requestDto);
     }
 
 
@@ -62,7 +61,22 @@ public class InventoryController {
                 request.getQuantity()
         );
 
-
         return "Inventory reserved successfully";
+    }
+
+    //release stock
+    @PostMapping("/release")
+    @ResponseStatus(HttpStatus.OK)
+    public ReleaseStockResponseDto releaseStock(@RequestParam Long orderId,
+                                                @RequestParam Long productId,
+                                                @RequestParam Integer quantity){
+        inventoryService.releaseStock(orderId, productId, quantity);
+
+        return ReleaseStockResponseDto.builder()
+                .message("Inventory released successfully")
+                .orderId(orderId)
+                .productId(productId)
+                .quantity(quantity)
+                .build();
     }
 }

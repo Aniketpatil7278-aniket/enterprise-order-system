@@ -37,6 +37,7 @@ public class User {
     private LocalDateTime updatedAt;
 
 
+    //before insert (lifecycle)
     @PrePersist
     public void onCreate(){
         LocalDateTime now = LocalDateTime.now();
@@ -45,6 +46,7 @@ public class User {
         updatedAt= now;
     }
 
+    //before update
     @PreUpdate
     public void onUpdate(){
         updatedAt=LocalDateTime.now();

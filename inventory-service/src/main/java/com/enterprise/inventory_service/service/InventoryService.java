@@ -116,6 +116,24 @@ public class InventoryService {
         return mapToResponse(inventory);
     }
 
+    //update the stock
+    @Transactional
+    public InventoryResponseDto updateStock(InventoryRequestDto requestDto){
+        Inventory inventory=inventoryRepository.findByProductId(requestDto.getProductId())
+                .orElseThrow(()->new  InventoryNotFoundException("Inventory not found for product: " +requestDto.getProductId()));
+
+        //update the quantity
+        inventory.setAvailableQuantity(requestDto.getQuantity());
+
+        inventory.setStatus(requestDto.getQuantity() >0
+                    ? InventoryStatus.AVAILABLE
+                    : InventoryStatus.OUT_OF_STOCK);
+
+
+        Inventory updateInventory =inventoryRepository.save(inventory);
+        return mapToResponse(updateInventory);
+    }
+
 
     //_________reserve stock
 
@@ -151,7 +169,6 @@ public class InventoryService {
 
 
         // Save reservation
-
         InventoryReservation reservation = InventoryReservation.builder()
                                         .orderId(orderId)
                                         .productId(productId)

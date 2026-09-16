@@ -62,13 +62,13 @@ public class Inventory {
     }
 
     @PreUpdate
-    public void onUpdate(){
-        updatedAt=LocalDateTime.now();
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
 
-        if(availableQuantity == null && availableQuantity >0){
-            status=InventoryStatus.AVAILABLE;
-        }else {
-            status=InventoryStatus.OUT_OF_STOCK;
+        if (availableQuantity != null && availableQuantity > 0) {
+            status = InventoryStatus.AVAILABLE;
+        } else {
+            status = InventoryStatus.OUT_OF_STOCK;
         }
     }
 
